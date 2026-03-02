@@ -3,13 +3,13 @@
 
 #include "Material.h"
 
-struct Wezel {
+struct Node {
     struct Material* material;
-    struct Wezel* next;
-    struct Wezel* prev;
+    struct Node* next;
+    struct Node* prev;
 };
 
-struct Wezel* createWezel(struct Material* mat);
-void freeWezel(struct Wezel* wezel);
+struct Node* create_node(struct Material* mat);
+void free_node(struct Node* node);
 
 #endif
