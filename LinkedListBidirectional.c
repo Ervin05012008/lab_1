@@ -14,7 +14,7 @@ struct Material* create_material(const char* n, double g, char f) {
 void free_material(struct Material* m) { free(m); }
 
 struct Node* create_node(struct Material* m) {
-    struct Node* n = calloc(1, sizeof(struct Node));
+    struct Node* n = calloc(1, sizeof(struct Node)); 
     n->material = m;
     return n;
 }
@@ -24,11 +24,11 @@ void free_node(struct Node* n) {
     free(n);
 }
 
-LinkedList* create_list() {
-    return calloc(1, sizeof(LinkedList));
+struct LinkedList* create_list() {
+    return calloc(1, sizeof(struct LinkedList));
 }
 
-void free_list(LinkedList* l) {
+void free_list(struct LinkedList* l) {
     while (l->head) {
         struct Node* next = l->head->next;
         free_node(l->head);
@@ -37,14 +37,14 @@ void free_list(LinkedList* l) {
     free(l);
 }
 
-void print(LinkedList* l) {
+void print(struct LinkedList* l) {
     int i = 0;
     for (struct Node* c = l->head; c != NULL; c = c->next) {
         printf("[%d] %s (%.2lf) [%c]\n", i++, c->material->nazwa, c->material->gestosc, c->material->flaga);
     }
 }
 
-void save(LinkedList* l, const char* name) {
+void save(struct LinkedList* l, const char* name) {
     FILE* f = fopen(name, "w");
     if (!f) return;
     for (struct Node* c = l->head; c != NULL; c = c->next) {
@@ -53,7 +53,7 @@ void save(LinkedList* l, const char* name) {
     fclose(f);
 }
 
-void load_list(LinkedList* l, const char* name) {
+void load_list(struct LinkedList* l, const char* name) {
     FILE* f = fopen(name, "r");
     if (!f) return;
     char n[100]; double g; char fl;
@@ -67,7 +67,7 @@ void print_actions() {
     printf("\n1.Print | 2.Push | 3.Pop | 4.Push_at | 5.Pop_at | 6.Get | 7.Save | 0.Exit\nWybor: ");
 }
 
-struct Node* get_element(LinkedList* l, int index) {
+struct Node* get_element(struct LinkedList* l, int index) {
     struct Node* curr = l->head;
     while (curr && index > 0) {
         curr = curr->next;
@@ -76,36 +76,36 @@ struct Node* get_element(LinkedList* l, int index) {
     return curr;
 }
 
-struct Node* push(LinkedList* l, struct Material* m) {
+struct Node* push(struct LinkedList* l, struct Material* m) {
     struct Node* new_n = create_node(m);
     if (!l->head) { l->head = new_n; return new_n; }
-
+    
     struct Node* curr = l->head;
-    while (curr->next) curr = curr->next;
-
+    while (curr->next) curr = curr->next; 
+    
     curr->next = new_n;
     new_n->prev = curr;
     return new_n;
 }
 
-struct Node* pop(LinkedList* l) {
+struct Node* pop(struct LinkedList* l) {
     if (!l->head) return NULL;
-    if (!l->head->next) {
-        struct Node* n = l->head;
-        l->head = NULL;
-        return n;
+    if (!l->head->next) { 
+        struct Node* n = l->head; 
+        l->head = NULL; 
+        return n; 
     }
-
+    
     struct Node* curr = l->head;
-    while (curr->next) curr = curr->next;
-
+    while (curr->next) curr = curr->next; 
+    
     curr->prev->next = NULL;
     curr->prev = NULL;
     return curr;
 }
 
-struct Node* push_at(LinkedList* l, struct Material* m, int index) {
-    if (index == 0 || !l->head) {
+struct Node* push_at(struct LinkedList* l, struct Material* m, int index) {
+    if (index == 0 || !l->head) { 
         struct Node* new_n = create_node(m);
         new_n->next = l->head;
         if (l->head) l->head->prev = new_n;
@@ -114,7 +114,7 @@ struct Node* push_at(LinkedList* l, struct Material* m, int index) {
     }
 
     struct Node* right = get_element(l, index);
-    if (!right) return push(l, m);
+    if (!right) return push(l, m); 
 
     struct Node* new_n = create_node(m);
     struct Node* left = right->prev;
@@ -124,17 +124,17 @@ struct Node* push_at(LinkedList* l, struct Material* m, int index) {
     return new_n;
 }
 
-struct Node* pop_at(LinkedList* l, int index) {
+struct Node* pop_at(struct LinkedList* l, int index) {
     struct Node* target = get_element(l, index);
-    if (!target) return NULL;
+    if (!target) return NULL; 
 
-    if (target == l->head) {
+    if (target == l->head) { 
         l->head = target->next;
         if (l->head) l->head->prev = NULL;
-    } else {
+    } else { 
         struct Node* left = target->prev;
         struct Node* right = target->next;
-
+        
         left->next = right;
         if (right) right->prev = left;
     }
